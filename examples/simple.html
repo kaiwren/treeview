@@ -1,0 +1,47 @@
+<html>
+<head>
+  <title>Simple</title>
+  <script src="../lib/prototype.js"></script>
+  <script src="../lib/sizzle.js"></script>
+  <script src="../src/prototype.treeview.js"></script>
+  <link href="../css/prototype.treeview.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+  <div id="tree">
+    <ul id="root">
+      <li>Ooga</li>
+      <li id="foo">
+        Foo
+        <ul>
+          <li>Bar</li>
+          <li>
+            Baz
+            <ul>
+              <li> Oh noes!</li>
+              <li>
+                'lo World
+                <ul>
+                  <li>Erm..</li>
+                  <li>Out</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        Booga
+        <ul>
+          <li>Ahem!</li>
+          <li>Alright.</li>
+        </ul>
+      </li>
+      <li>Urk</li>
+    </ul>
+  </div>
+
+  <script type="text/javascript">
+    var tree = new TreeView($('tree'));
+  </script>
+</body>
+</html>
