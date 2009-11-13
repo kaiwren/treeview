@@ -1,3 +1,5 @@
 ProtoTreeView 0.1
 
 A prototype/sizzle based treeview implementation that understands semantic HTML.
+
+Look at the ProtoTreeView wiki for more examples: http://wiki.github.com/kaiwren/treeview
