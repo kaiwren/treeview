@@ -13,7 +13,9 @@ Object.extend(TreeView, {
     lastExpandable: 'lastExpandable',
     hitarea: 'hitarea',
     collapsableHitArea: 'collapsable-hitarea',
-    lastCollapsableHitArea: 'lastCollapsable-hitarea'
+    lastCollapsableHitArea: 'lastCollapsable-hitarea',
+    expandableHitArea: 'expandable-hitarea',
+    lastExpandableHitArea: 'lastExpandable-hitarea'
   },
 
   buildHitArea: function(){
@@ -40,27 +42,73 @@ TreeView.prototype = {
   },
 
   render: function() {
+    var self = this;
+
     this.target.addClassName(TreeView.classes.treeview);
+
     this.extractBranches().each(function(element) {
       var hitArea = TreeView.buildHitArea();
-      hitArea.observe('click', function(e){
+      var children = Sizzle('> ul', element);
 
-      });
+      if(children.length != 1){ throw "Error: Branch node contains more than one ul tag"}
+
       element.addClassName(TreeView.classes.collapsable);
       element.store('hitArea', hitArea);
+      element.store('children', children[0]);
+      hitArea.store('node', element);
       element.insert({top: hitArea.addClassName(TreeView.classes.collapsableHitArea)});
+
+      hitArea.observe('click', function(e){
+        self.toggle(e.element().retrieve('node'));
+      });
     });
+
     this.extractLastBranches().each(function(element) {
       element.addClassName(TreeView.classes.lastCollapsable);
       element.retrieve('hitArea').addClassName(TreeView.classes.lastCollapsableHitArea);
     });
+
     this.extractLeaves().each(function(leaf){
       leaf.addClassName(TreeView.classes.last);
     });
   },
 
   toggle: function(node){
-    
+    var children = node.retrieve('children');
+    var hitArea = node.retrieve('hitArea');
+
+    Effect.toggle(children, 'blind');
+    if(!children.visible()){
+      if(node.hasClassName(TreeView.classes.expandable)){
+        node.removeClassName(TreeView.classes.expandable);
+        node.addClassName(TreeView.classes.collapsable);
+
+        hitArea.removeClassName(TreeView.classes.expandableHitArea);
+        hitArea.addClassName(TreeView.classes.collapsableHitArea);
+      }
+      if(node.hasClassName(TreeView.classes.lastExpandable)){
+        node.removeClassName(TreeView.classes.lastExpandable);
+        node.addClassName(TreeView.classes.lastCollapsable);
+
+        hitArea.removeClassName(TreeView.classes.lastExpandableHitArea);
+        hitArea.addClassName(TreeView.classes.lastCollapsableHitArea);
+      }
+    }else{
+      if(node.hasClassName(TreeView.classes.collapsable)){
+        node.removeClassName(TreeView.classes.collapsable);
+        node.addClassName(TreeView.classes.expandable);
+
+        hitArea.removeClassName(TreeView.classes.collapsableHitArea);
+        hitArea.addClassName(TreeView.classes.expandableHitArea);
+      }
+      if(node.hasClassName(TreeView.classes.lastCollapsable)){
+        node.removeClassName(TreeView.classes.lastCollapsable);
+        node.addClassName(TreeView.classes.lastExpandable);
+
+        hitArea.removeClassName(TreeView.classes.lastCollapsableHitArea);
+        hitArea.addClassName(TreeView.classes.lastExpandableHitArea);
+      }
+    }
   }
 }
 
